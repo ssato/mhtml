@@ -49,6 +49,13 @@ def get_or_gen_filename(part, idx=0):
     :return: A filename as a string
     """
     filename = part.get_filename()
+
+    # if filename is not set in Content-Disposition, look in location
+    if not filename:
+        location = part.get_params(header='Content-Location')
+        if location and location[0]:
+            filename = location[0][0]
+
     if not filename:
         fileext = mimetypes.guess_extension(part.get_content_type())
         if not fileext:
